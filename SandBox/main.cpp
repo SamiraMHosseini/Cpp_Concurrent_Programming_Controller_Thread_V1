@@ -180,7 +180,7 @@ public:
 			}
 			if (strlen(destStr) <= 0)
 			{
-				
+
 				memcpy(destStr, sourceStr, len);
 				tempLen = len;
 			}
@@ -188,14 +188,14 @@ public:
 			destStr[--tempLen] = '\0';
 			destStr[--tempLen] = '\0';
 			destStr[--tempLen] = '\0';
-		
+
 		}
 
 		delete destStr;
 	}
 
 
-	
+
 
 };
 
@@ -212,15 +212,16 @@ public:
 	{
 
 		START_BANNER;
-
+		 
 		std::unique_lock<std::mutex> controllerLock(controllerResource.mtx);
+		//I used a predicate in the wait method of the condition variable to prevent spurious calls
 		controllerResource.cv.wait(controllerLock, [&]() -> bool { return controllerResource.controllerFlag; });
 		std::unique_lock<std::mutex> lock(sharedResource.mtx);
 		Debug::out("I have been notified...\n");
 		sharedResource.killflag = true;
 		lock.unlock();
 		sharedResource.cv.notify_all();
-		
+
 	}
 };
 int main()
